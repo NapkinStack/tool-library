@@ -1,6 +1,6 @@
 # tool-library
 
-<One sentence: what this project does.>
+Tool Library lets neighbours lend and borrow tools.
 
 ---
 
