@@ -2,6 +2,11 @@
 
 Tool Library lets neighbours lend and borrow tools.
 
+> A public validation project of the NapkinStack framework: an invented subject, test
+> data only, no real person's contact. It rehearses a team's way of working —
+> framing, cycles, test sheets, two teams behind one contract — before the framework
+> serves a real project.
+
 ---
 
 > **This project was created by `nstack init`**, the command of the NapkinStack
