@@ -1,0 +1,25 @@
+module:
+  name: contracts
+  responsibility: >
+    Defines and versions the interface contracts between modules.
+  owner: NapkinStack/maintainers
+  contact: "https://github.com/NapkinStack/tool-library/discussions"
+  lifecycle: active
+  criticality: high
+  user_facing: false
+
+provides: []
+consumes: []
+data:
+  owns: []
+  shared: []
+dependencies: []
+
+commands:
+  check: "echo 'commands.check to be declared: contract schema validation' >&2; exit 1"
+  test: "echo 'commands.test to be declared: contract tests' >&2; exit 1"
+
+docs:
+  readme: README.md
+  agents: AGENTS.md
+  runbook: docs/runbook.md
