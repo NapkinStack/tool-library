@@ -38,16 +38,30 @@ Holds the tools a neighbour is willing to lend in their neighbourhood.
 - **The `e2e` scenarios read the document themselves**, and never through
   `contract_double`: an oracle sharing its reader with what it judges goes green on a bug
   they hold in common. The duplication between the two is deliberate.
-- **`user_facing` is raised by the deliverable that puts a page in front of a neighbour**,
-  in that same pull request — D2 for this module. It is `false` while nothing is visible,
-  because the manifest describes what is. Do not raise it in advance and do not forget it:
-  from the moment it is `true`, every pull request touching this module carries a test
-  sheet, and no later pull request can lower it back.
+- **`user_facing` is `true` since D2**, the deliverable that put a page in front of a
+  neighbour, raised in that same pull request. Every pull request touching this module
+  beyond its description now carries a test sheet, and no later one can lower the flag back:
+  T1 reads the stricter of base and head.
+
+- **The page is not in the contract, and must not become one.** `catalog-api` v1 declares
+  two read operations, which is how another module knows this one. Publishing is something a
+  neighbour does on `catalog`'s own page — `GET /` and `POST /` — and a consumer that started
+  depending on it would be depending on something nothing promised. A write another module
+  needs is a contract change, additive, in its own pull request.
+
+- **The page and the contract answer from the same store and the same rules.** The three
+  fields, their bounds and the correction a neighbour reads all live in `listing.py`; the
+  page and the API each render what it says. A rule copied into the template would drift from
+  the one the contract is tested against.
 
 ## Business invariants
 
 - **A tool's location is approximate, never an exact address.** It is shown to neighbours
-  who have not met the lender yet. Nothing in a response carries a precise address.
+  who have not met the lender yet. Nothing in a response carries a precise address: there is
+  no field for one, the page says so under the field a neighbour types into, and D2's second
+  scenario reads the page and every response looking for one. **The field is free text, so
+  the module does not refuse an address a neighbour types in anyway** — that guard is not a
+  criterion of cycle 1 and adding it would be behaviour no sheet verifies. Reported with D2.
 - **Every actor in a test is an invented persona, in test data only.** Nothing in this
   project reaches a real person (charter, no-go).
 
@@ -58,7 +72,19 @@ Holds the tools a neighbour is willing to lend in their neighbourhood.
   `python -m contract_double` fails with *No module named contract_double*, while `pytest`
   works because `pythonpath = ["src"]` covers it alone. Found at D1's review, in a README
   command nothing ran. Caught now by the scenarios, which start the double with the command
-  `README.md` documents and no other.
+  `README.md` documents and no other. The page is started the same way, with `PYTHONPATH=src`
+  in front — which is why the `run` verb carries it.
+
+- **`bootstrap` stopped being optional at D2.** The scenarios drive a browser, and Playwright
+  downloads it once per clone. `nstack e2e catalog` on a fresh clone fails with Playwright's
+  own *Executable doesn't exist* until `nstack bootstrap catalog` has run. The browser's
+  system libraries are the runner image's, not this module's: `--with-deps` is deliberately
+  not used, because it needs `sudo` and would make the verb unrunnable on a workstation.
+
+- **`pytest` is 9 here, and that is Schemathesis's constraint.** `schemathesis` 4 requires
+  `pytest>=9,<10`. Both the `test` and `e2e` environments moved together so the module runs
+  one pytest; pinning an older Schemathesis to keep pytest 8 would have been the more
+  expensive half of the same choice.
 
 - **`contract_double` does not coerce a parameter's type.** A value is validated as the raw
   string it arrives as, so a document declaring a parameter of any type but `string` gets

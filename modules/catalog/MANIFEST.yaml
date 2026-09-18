@@ -19,11 +19,10 @@ module:
   criticality: "standard"
 
   # Does a user see this module? true requires a test sheet on its pull requests
-  # (docs/os/05-workflow.md §7). False at creation because it is true: nothing is in front
-  # of a neighbour yet. Deliverable D2 raises it in the pull request that delivers the page,
-  # which is the same pull request whose test sheet proves it. Raising it is caught at once
-  # and lowering it is impossible: T1 reads the stricter of base and head.
-  user_facing: false
+  # (docs/os/05-workflow.md §7). Raised by D2, the deliverable that puts a page in front of a
+  # neighbour, in the same pull request whose test sheet proves it — the manifest describes
+  # what is. Lowering it again is impossible: T1 reads the stricter of base and head.
+  user_facing: true
 
 # Contracts PROVIDED by this module.
 # Declared by deliverable D1, in the same pull request as the document it points at: the
@@ -45,6 +44,8 @@ consumes: []
 data:
   owns:
     - "The tools listed in a neighbourhood: what the tool is, who lends it, roughly where"
+  # One SQLite file per module (charter, C2), written where the run verb is told to put it.
+  # Never committed: modules/catalog/.gitignore.
   shared: []                     # any exception requires a named ADR
 
 # Significant external dependencies.
@@ -56,13 +57,18 @@ dependencies: []
 # whatever a workstation leaves in it.
 commands:
   check: "uvx --from ruff==0.16.8 ruff format --check src tests e2e && uvx --from ruff==0.16.8 ruff check src tests e2e"
-  test: "uv run --with pytest==8.4.2 pytest"
-  # D1's scenarios: the contract validated, then called against the double built from it.
-  # Playwright, as the charter fixes (C2) - here its API request context, since D1 puts no
-  # page in front of anyone. The browser and its screenshots arrive with D2.
+  test: "uv run --with pytest==9.1.1 pytest"
+  # D1's scenarios read the contract and call the double built from it; D2's drive this
+  # module - the page in a browser at a phone's width, and the contract answered by the
+  # module itself. Playwright is the charter's e2e driver (C2); the browser arrives with D2,
+  # and bootstrap downloads it.
   e2e: "uv run --group e2e pytest e2e"
-  # bootstrap:                   # nothing to prepare: uv resolves on demand
-  # run:                         # declared with D2, when there is a page to serve
+  # Playwright's browser, installed as a package and never as an action (charter, C2). CI
+  # runs this before check, test and e2e; a workstation runs it once per clone.
+  bootstrap: "uv run --group e2e playwright install chromium"
+  # The page, on its own SQLite file. PYTHONPATH because this project declares no
+  # [build-system], so uv never puts src/ on sys.path - see AGENTS.md, known traps.
+  run: "PYTHONPATH=src uv run python -m catalog.app"
 
 # Review budget. Inherited from the project when absent (docs/os/05-workflow.md §4).
 review_budget:
