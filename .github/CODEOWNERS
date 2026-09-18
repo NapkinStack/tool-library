@@ -18,3 +18,4 @@
 
 # Modules — one line per module, added by the scaffolding.
 /modules/catalog/              @NapkinStack/catalog
+/modules/loans/                @NapkinStack/loans

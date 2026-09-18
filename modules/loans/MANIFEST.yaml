@@ -1,0 +1,92 @@
+# Machine-readable source of truth for the module.
+# Read by: humans (onboarding), agents (scoping), CI (fitness functions).
+# Any divergence between this file and the code fails CI.
+
+module:
+  name: "loans"
+
+  # ONE sentence. If it needs an "and", the module probably does two things.
+  responsibility: >
+    Records who holds a listed tool, from the day it is handed over to the day it comes
+    back.
+
+  owner: "NapkinStack/loans"          # a GitHub team, organisation/team; a user only without an organisation
+  contact: "@NapkinStack/loans"
+
+  # proposed | active | maintenance | deprecated | retired   (docs/os/02-modules.md §6)
+  lifecycle: proposed
+
+  # prototype | standard | high | critical              (docs/os/07-governance.md §6)
+  criticality: "standard"
+
+  # Does a user see this module? true requires a test sheet on its pull requests
+  # (docs/os/05-workflow.md §7). False at creation because it is true: nothing is in front
+  # of a neighbour yet. Deliverable D3 raises it in the pull request that delivers the page,
+  # which is the same pull request whose test sheet proves it. Raising it is caught at once
+  # and lowering it is impossible: T1 reads the stricter of base and head.
+  user_facing: false
+
+  # The module's name in the code, when it differs from the folder (package, namespace).
+  # Used by boundary detection.
+  # code_name: loans
+
+  # Only when lifecycle = deprecated. The check turns red once the date has passed.
+  # deprecation:
+  #   replaced_by:
+  #   removal_date: YYYY-MM-DD
+
+# Contracts PROVIDED by this module.
+provides: []
+#  - contract: loans-api
+#    version: v1
+#    path: contracts/loans-api/v1
+#    stability: experimental      # experimental | stable | deprecated
+#    # removal_date: YYYY-MM-DD   # required when stability = deprecated
+
+# Contracts CONSUMED - this is the DECLARED graph.
+# CI compares it with the REAL graph extracted from the code: any gap is a violation.
+# Deliberately empty at creation: contracts/catalog-api/v1 does not exist yet, and a
+# declared dependency that is never used is itself a violation (B4). Deliverable D3
+# declares catalog-api v1 here, in the pull request that first reads it.
+consumes: []
+#  - contract: identity-api
+#    version: v1
+#    module: identity
+
+# Data owned. Nobody else accesses it directly.
+data:
+  owns:
+    - "Loans: which tool, held by whom, between which dates, and whether it came back"
+  shared: []                     # any exception requires a named ADR
+
+# Significant external dependencies.
+# Each one declares its exit strategy (docs/os/06-decisions.md §3).
+dependencies: []
+#  - name:
+#    purpose:
+#    adr:
+#    exit_strategy:
+
+# Standard verbs: the same names everywhere, running this module's stack commands
+# (docs/os/09-platform.md §2). `nstack <verb> <module>` runs them from this folder.
+# No stack is imposed: replace every "to be declared" command.
+# The stack is the charter's constraint C2. Sources are named rather than walking ".":
+# a tool that walks the folder also walks whatever a workstation leaves in it.
+commands:
+  check: "uvx --from ruff==0.16.8 ruff format --check src tests && uvx --from ruff==0.16.8 ruff check src tests"
+  test: "uv run --with pytest==8.4.2 pytest"    # NEVER starts another module
+  # bootstrap:                   # optional: make the module usable from a fresh clone
+  # run:                         # optional: local start, with doubles for the dependencies
+  # e2e:                         # optional: end-to-end scenarios; evidence written to .evidence/
+
+# Review budget. Inherited from the project when absent (docs/os/05-workflow.md §4).
+review_budget:
+  max_lines: 400
+  max_files: 15
+  max_modules: 1                 # not adjustable
+
+docs:
+  readme: README.md
+  agents: AGENTS.md
+  adr: docs/adr/
+  # runbook: docs/runbook.md     # required when criticality >= high
