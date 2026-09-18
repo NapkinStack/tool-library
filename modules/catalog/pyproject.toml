@@ -20,13 +20,13 @@ dependencies = [
 # differently from one run to the next is evidence of nothing.
 [dependency-groups]
 e2e = [
-    "pytest==9.1.1",               # 9 because that is what schemathesis 4 requires
-    "playwright==1.63.0",          # the charter's e2e driver (C2); its browser arrives with D2
-    "pyyaml==6.0.3",               # reads the contract document
-    "jsonschema==4.26.0",          # OpenAPI 3.1 schemas are JSON Schema 2020-12
-    "referencing==0.37.0",         # resolves the document's own $ref
+    "pytest==9.1.1",                # 9 is what schemathesis 4 requires
+    "playwright==1.63.0",           # the charter's e2e driver (C2); its browser arrives with D2
+    "pyyaml==6.0.3",                # reads the contract document
+    "jsonschema==4.26.0",           # OpenAPI 3.1 schemas are JSON Schema 2020-12
+    "referencing==0.37.0",          # resolves the document's own $ref
     "openapi-spec-validator==0.9.0",
-    "schemathesis==4.27.3",        # the producer-side contract test the charter fixes (C2)
+    "schemathesis==4.27.3",         # the producer side of the contract test (C2)
 ]
 
 [tool.ruff]

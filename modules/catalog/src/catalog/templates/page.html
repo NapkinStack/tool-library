@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tools in the neighbourhood</title>
+<style>
+  /* One column, read at arm's length in a garage or on a doorstep. No build step, no
+     bundler, no second app store (charter, C2). */
+  :root { --ink: #1a1a1a; --quiet: #4a4a4a; --line: #c9c9c9; --wrong: #8f1d1d; --page: #fff; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 1rem; background: var(--page); color: var(--ink);
+         font: 1rem/1.5 system-ui, sans-serif; }
+  main { max-width: 34rem; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 1rem; }
+  h2 { font-size: 1.125rem; margin: 2rem 0 .5rem; }
+  h3 { font-size: 1rem; margin: 0 0 .25rem; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { border: 1px solid var(--line); border-radius: .5rem; padding: .75rem; margin-bottom: .5rem; }
+  li p { margin: 0; color: var(--quiet); }
+  .said { background: #f2f4f7; border-radius: .5rem; padding: .75rem; margin: 0; }
+  .wrong { color: var(--wrong); border: 2px solid var(--wrong); border-radius: .5rem;
+           padding: .75rem; margin: 0 0 1rem; font-weight: 600; }
+  .field { margin: 0 0 1rem; }
+  label { display: block; font-weight: 600; margin-bottom: .25rem; }
+  .hint { display: block; color: var(--quiet); font-size: .875rem; margin-bottom: .375rem; }
+  input { display: block; width: 100%; min-height: 2.75rem; padding: .5rem;
+          border: 1px solid var(--quiet); border-radius: .5rem; font: inherit; }
+  input[aria-invalid="true"] { border: 2px solid var(--wrong); }
+  button { width: 100%; min-height: 2.75rem; border: 0; border-radius: .5rem;
+           background: var(--ink); color: var(--page); font: inherit; font-weight: 600; }
+  :focus-visible { outline: 3px solid #0b5cd5; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Tools in the neighbourhood</h1>
+
+  {% if listings %}
+  <ul>
+    {% for tool in listings %}
+    <li>
+      <h3>{{ tool.name }}</h3>
+      <p>Lent by {{ tool.lender }}</p>
+      <p>{{ tool.approximate_location }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="said" role="status">No tool is listed yet. Publish the first one with the form
+    just below: your name, the tool, and roughly where it is.</p>
+  {% endif %}
+
+  <h2>Publish a tool</h2>
+  {% if message %}
+  <p class="wrong" id="correction" role="alert">{{ message }}</p>
+  {% endif %}
+  <form method="post" action="/" novalidate>
+    {% for field, (label, limit, hint) in fields.items() %}
+    <p class="field">
+      <label for="{{ field }}">{{ label }}</label>
+      <span class="hint" id="{{ field }}-hint">{{ hint }}</span>
+      <input id="{{ field }}" name="{{ field }}" type="text" maxlength="{{ limit }}" required
+             value="{{ typed.get(field, '') }}"
+             aria-describedby="{{ field }}-hint{% if field == correct %} correction{% endif %}"
+             {% if field == correct %}aria-invalid="true" autofocus{% endif %}>
+    </p>
+    {% endfor %}
+    <button type="submit">Publish it</button>
+  </form>
+</main>
+</body>
+</html>

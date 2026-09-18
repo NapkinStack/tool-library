@@ -1,0 +1,4 @@
+# The neighbourhood's own SQLite file (charter, C2): data this module owns, written where
+# the run verb is told to put it. Never committed — test data or not, a repository is not
+# where a module's data lives.
+*.sqlite3

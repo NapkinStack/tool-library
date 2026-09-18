@@ -91,7 +91,7 @@ def answering(process: subprocess.Popen[bytes], base: str, what: str) -> None:
         if process.poll() is not None:
             raise RuntimeError(f"{what} exited with {process.returncode} before answering")
         try:
-            with urllib.request.urlopen(f"{base}/", timeout=1):  # noqa: S310 - a local port
+            with urllib.request.urlopen(f"{base}/", timeout=1):  # a port this test opened
                 return
         except OSError:
             if time.monotonic() > deadline:
