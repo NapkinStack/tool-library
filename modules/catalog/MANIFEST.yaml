@@ -26,10 +26,16 @@ module:
   user_facing: false
 
 # Contracts PROVIDED by this module.
-# Deliberately empty at creation: the declared graph must equal the real one, and
-# contracts/catalog-api/v1 does not exist yet. Deliverable D1 of cycle 1 creates it and
-# declares it here in the same pull request.
-provides: []
+# Declared by deliverable D1, in the same pull request as the document it points at: the
+# declared graph must equal the real one. v1 is never edited once merged; a breaking
+# change creates v2 beside it (charter, C2).
+provides:
+  - contract: catalog-api
+    version: v1
+    path: contracts/catalog-api/v1
+    stability: experimental      # experimental | stable | deprecated
+    # experimental: nothing is deployed and no consumer has migrated yet. loans declares
+    # it under consumes with D3, the first pull request that reads it.
 
 # Contracts CONSUMED - this is the DECLARED graph.
 # CI compares it with the REAL graph extracted from the code: any gap is a violation.
@@ -49,11 +55,14 @@ dependencies: []
 # Sources are named rather than walking ".": a tool that walks the folder also walks
 # whatever a workstation leaves in it.
 commands:
-  check: "uvx --from ruff==0.16.8 ruff format --check src tests && uvx --from ruff==0.16.8 ruff check src tests"
+  check: "uvx --from ruff==0.16.8 ruff format --check src tests e2e && uvx --from ruff==0.16.8 ruff check src tests e2e"
   test: "uv run --with pytest==8.4.2 pytest"
+  # D1's scenarios: the contract validated, then called against the double built from it.
+  # Playwright, as the charter fixes (C2) - here its API request context, since D1 puts no
+  # page in front of anyone. The browser and its screenshots arrive with D2.
+  e2e: "uv run --group e2e pytest e2e"
   # bootstrap:                   # nothing to prepare: uv resolves on demand
   # run:                         # declared with D2, when there is a page to serve
-  # e2e:                         # declared with D1: Playwright, evidence in .evidence/
 
 # Review budget. Inherited from the project when absent (docs/os/05-workflow.md §4).
 review_budget:
