@@ -230,3 +230,5 @@ A new module therefore declares commands "to be declared", which fail: wiring `c
       the skills, and they must speak your domain's vocabulary
 - [ ] The `e2e` command of every user-facing module, and the tools that drive a browser or
       an emulator, in `docs/tooling-profile.md`
+
+<!-- Probes P9 and P10: a harmless change, green CI, deliberately left unapproved. -->
