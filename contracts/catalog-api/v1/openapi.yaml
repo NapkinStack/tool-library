@@ -1,0 +1,179 @@
+# catalog-api v1 - the contract `catalog` provides, and the only channel another module
+# may know it through (docs/os/03-contracts.md).
+#
+# Hand-written, never generated from the producer's models (charter, C2): a contract
+# derived from a producer's internals couples every consumer to them, and the failure
+# only shows up at the first refactor.
+#
+# This version is never edited once merged. A breaking change creates
+# contracts/catalog-api/v2 beside it, through an expand/contract sequence.
+#
+# Every neighbour, tool and place below is invented test data (charter, C4).
+openapi: "3.1.1"
+info:
+  title: catalog-api
+  version: "1.0.0"
+  summary: What a neighbour is willing to lend, and roughly where it is.
+  description: |
+    `catalog` owns what is listed. Who holds a tool right now, and between which dates, is
+    not here: `loans` owns that (ADR-0001).
+
+    Two things this contract holds to, both from the charter:
+
+    - a tool's location is approximate, never an exact address;
+    - a listing carries no value, no rating and no way to reach anyone.
+servers:
+  - url: /
+    description: >-
+      Relative, because nothing is deployed (charter). What answers is `catalog` itself,
+      or the double built from this document.
+
+paths:
+  /tools:
+    get:
+      operationId: listTools
+      summary: The tools listed in the neighbourhood
+      description: >-
+        Everything a neighbour has said they are willing to lend. An empty list is a
+        normal answer: a neighbourhood starts with nothing listed.
+      responses:
+        "200":
+          description: The tools listed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolList"
+              example:
+                tools:
+                  - id: "9f1c6f6a-5f1e-4e2a-9a1e-6a1b0c2d3e4f"
+                    name: Hammer drill
+                    lender: Amina
+                    approximateLocation: Rue des Lilas, near the bakery
+                  - id: "3b7d2c18-8c4a-4f6b-b2d1-0e9a7c5f4d3b"
+                    name: Extension ladder
+                    lender: Bruno
+                    approximateLocation: Allee du Parc, by the playground
+
+  /tools/{toolId}:
+    get:
+      operationId: getTool
+      summary: One listed tool
+      description: >-
+        What a consumer needs in order to name a tool it did not list itself - `loans`
+        reads this before recording a loan.
+      parameters:
+        - $ref: "#/components/parameters/ToolId"
+      responses:
+        "200":
+          description: The tool listed under that identifier.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tool"
+              example:
+                id: "9f1c6f6a-5f1e-4e2a-9a1e-6a1b0c2d3e4f"
+                name: Hammer drill
+                lender: Amina
+                approximateLocation: Rue des Lilas, near the bakery
+        "400":
+          description: The request is not one this document declares.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+              example:
+                type: about:blank
+                title: That is not a tool identifier
+                status: 400
+                detail: toolId is a UUID, as this contract declares.
+        "404":
+          description: No tool is listed under that identifier.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+              example:
+                type: about:blank
+                title: No tool is listed under that identifier
+                status: 404
+                detail: It may never have been listed, or the neighbour may have withdrawn it.
+
+components:
+  parameters:
+    ToolId:
+      name: toolId
+      in: path
+      required: true
+      description: The identifier of a listed tool.
+      schema:
+        $ref: "#/components/schemas/ToolId"
+      example: "9f1c6f6a-5f1e-4e2a-9a1e-6a1b0c2d3e4f"
+
+  schemas:
+    ToolId:
+      type: string
+      format: uuid
+      # The pattern carries the rule: `format` is an annotation, and a consumer that only
+      # validates cannot be assumed to assert it.
+      pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+      description: >-
+        Identifies a listing, and nothing about the neighbour who published it.
+
+    Tool:
+      type: object
+      additionalProperties: false
+      required: [id, name, lender, approximateLocation]
+      properties:
+        id:
+          $ref: "#/components/schemas/ToolId"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+          description: What the tool is, in the words of the neighbour who lends it.
+        lender:
+          type: string
+          minLength: 1
+          maxLength: 80
+          description: >-
+            The neighbour who lends it - a name typed on a form, never a verified
+            identity and never a way to reach them.
+        approximateLocation:
+          type: string
+          minLength: 1
+          maxLength: 120
+          description: >-
+            Roughly where the tool is: a street, a landmark. Never an exact address
+            (charter, no-go) - the two neighbours agree on the rest between themselves.
+
+    ToolList:
+      type: object
+      additionalProperties: false
+      required: [tools]
+      properties:
+        tools:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tool"
+
+    Problem:
+      type: object
+      description: >-
+        RFC 9457 problem details. `type` stays `about:blank` while no documentation page
+        is published (RFC 9457 section 4.2.1): the title carries the meaning.
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+          default: about:blank
+        title:
+          type: string
+          description: What went wrong, in one sentence a person can read.
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+          description: What this particular occurrence was.

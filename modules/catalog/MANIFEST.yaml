@@ -26,10 +26,16 @@ module:
   user_facing: false
 
 # Contracts PROVIDED by this module.
-# Deliberately empty at creation: the declared graph must equal the real one, and
-# contracts/catalog-api/v1 does not exist yet. Deliverable D1 of cycle 1 creates it and
-# declares it here in the same pull request.
-provides: []
+# Declared by deliverable D1, in the same pull request as the document it points at: the
+# declared graph must equal the real one. v1 is never edited once merged; a breaking
+# change creates v2 beside it (charter, C2).
+provides:
+  - contract: catalog-api
+    version: v1
+    path: contracts/catalog-api/v1
+    stability: experimental      # experimental | stable | deprecated
+    # experimental: nothing is deployed and no consumer has migrated yet. loans declares
+    # it under consumes with D3, the first pull request that reads it.
 
 # Contracts CONSUMED - this is the DECLARED graph.
 # CI compares it with the REAL graph extracted from the code: any gap is a violation.
