@@ -53,8 +53,19 @@ Holds the tools a neighbour is willing to lend in their neighbourhood.
 
 ## Known traps
 
-Nothing recorded yet. The first entry belongs to whoever hits it, with the test that would
-have caught it.
+- **`src/` is not on `sys.path` under `uv run`.** This `pyproject.toml` declares no
+  `[build-system]`, so uv treats the project as non-packaged and never installs it:
+  `python -m contract_double` fails with *No module named contract_double*, while `pytest`
+  works because `pythonpath = ["src"]` covers it alone. Found at D1's review, in a README
+  command nothing ran. Caught now by the scenarios, which start the double with the command
+  `README.md` documents and no other.
+
+- **`contract_double` does not coerce a parameter's type.** A value is validated as the raw
+  string it arrives as, so a document declaring a parameter of any type but `string` gets
+  that operation's declared `400`, for its own example included — a wrong answer, not a
+  `501`. `catalog-api v1` declares one string parameter, coercion was deliberately not
+  built at D1's review, and the scenario that would catch it is not written because it
+  would be red by design. Build the coercion before pointing the double at such a document.
 
 ## Non-standard commands
 

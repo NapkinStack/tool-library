@@ -62,15 +62,17 @@ def evidence() -> Callable[[str, Any], Path]:
 def double() -> Iterator[APIRequestContext]:
     """The double, started from the contract document alone, and the client that calls it.
 
-    No implementation of catalog exists, and none is started here. Readiness is waited for
-    on the observable event — the first answer — never on a duration (`playbooks/tests.md`).
+    No implementation of catalog exists, and none is started here. Started by the command
+    `README.md` documents, and by no other: a documented way to start it that nothing runs
+    is a way that stops working unnoticed — which is exactly what happened at D1's review.
+    Readiness is waited for on the observable event — the first answer — never on a
+    duration (`playbooks/tests.md`).
     """
     with socket.socket() as free:
         free.bind(("127.0.0.1", 0))
         port = free.getsockname()[1]
     process = subprocess.Popen(
-        [sys.executable, "-m", "contract_double", str(CONTRACT), str(port)],
-        env={"PYTHONPATH": str(MODULE / "src"), "PATH": "/usr/bin:/bin"},
+        [sys.executable, "src/contract_double.py", str(CONTRACT), str(port)],
         cwd=MODULE,
     )
     try:

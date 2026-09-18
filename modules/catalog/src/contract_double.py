@@ -1,9 +1,8 @@
 """A double built from an OpenAPI document, and from nothing else.
 
-It carries no domain behaviour and knows nothing about tools: point it at another OpenAPI
-document and it serves that one. This is what lets a consumer work against
-`contracts/catalog-api/v1/openapi.yaml` before any implementation of `catalog` exists —
-and there is none behind this.
+It carries no domain behaviour and knows nothing about tools. This is what lets a consumer
+work against `contracts/catalog-api/v1/openapi.yaml` before any implementation of `catalog`
+exists — and there is none behind this.
 
 Every answer comes from the document:
 
@@ -16,10 +15,19 @@ Every answer comes from the document:
 - otherwise → the lowest 2xx the operation declares, with the example that response
   carries, under the media type it declares.
 
-A response declared without an example gets a 501: a contract with no example leaves its
-consumer guessing (`docs/os/03-contracts.md` §7).
+A response declared without an example gets a 501.
 
-    python -m contract_double ../../contracts/catalog-api/v1/openapi.yaml 8000
+**What it does not do, verified at D1's review.** A parameter value is validated as the raw
+string it arrives as, with no coercion: a document declaring a parameter of any type other
+than `string` is answered with that operation's declared 400, including for the example the
+document itself carries. That is a wrong answer, not a 501, and nothing here detects it.
+`catalog-api v1` declares one path parameter and it is a string, so the limitation does not
+touch it; coercion was deliberately not built (D1's review). A document using another type
+needs it built first.
+
+Start it from the module folder, exactly as `README.md` says — and as the scenarios do:
+
+    uv run --group e2e python src/contract_double.py <openapi document> [port]
 """
 
 from __future__ import annotations
@@ -131,7 +139,7 @@ def create_app(document: dict[str, Any]) -> FastAPI:
 
 
 def main(arguments: list[str]) -> int:
-    """`python -m contract_double <openapi document> [port]` — it serves what it is given."""
+    """`python src/contract_double.py <openapi document> [port]`, from the module folder."""
     if not arguments:
         print(main.__doc__, file=sys.stderr)
         return 2

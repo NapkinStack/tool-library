@@ -29,13 +29,22 @@ A consumer does not wait for an implementation: the document is servable on its 
 
 ```bash
 cd modules/catalog
-uv run --group e2e python -m contract_double ../../contracts/catalog-api/v1/openapi.yaml 8000
+uv run --group e2e python src/contract_double.py ../../contracts/catalog-api/v1/openapi.yaml 8000
 ```
+
+This is the command the `e2e` scenarios use to start it, so it is checked on every run
+rather than only written down.
 
 `contract_double` holds no `catalog` behaviour and nothing about tools: it answers each
 request from the document — the declared example for the operation asked, the declared
 `404` for an identifier the document does not carry, the declared `400` for what its
-schemas reject. Point it at another OpenAPI document and it serves that one.
+schemas reject, and a `501` for a response the document declares without an example.
+
+**What it does not do.** A parameter value is validated as the raw string it arrives as,
+with no coercion. A document declaring a parameter of any type other than `string` gets
+that operation's declared `400` — even for the example the document itself carries. That is
+a wrong answer rather than a `501`, and nothing detects it. `catalog-api v1` declares one
+path parameter and it is a string; another document needs the coercion built first.
 
 ## Decisions
 
