@@ -8,7 +8,7 @@ deliverables:
   - id: D1
     title: "catalog-api v1: the versioned contract catalog provides, and a double built from it that a consumer can work against before any implementation exists"
     module: "catalog"
-    state: ready
+    state: accepted
     acceptance:
       - "Given contracts/catalog-api/v1/openapi.yaml, when the e2e verb of catalog runs in CI, then the document is reported as a valid OpenAPI 3.1 document and the report is written to modules/catalog/.evidence/"
       - "Given no implementation of catalog, when the double built from the schema is started and every operation the contract declares is called with the examples the contract itself carries, then each answers with the status and the payload the contract declares, and the transcript is written to modules/catalog/.evidence/"
@@ -25,7 +25,7 @@ deliverables:
   - id: D3
     title: "A neighbour records a loan of a listed tool with its two dates, and records its return"
     module: "loans"
-    state: proposed
+    state: ready
     acceptance:
       - "Given the test persona Bruno at a 375-pixel-wide viewport and a tool listed in catalog, when he records a loan with a hand-over date and a return date, then the loan appears with both dates, the tool is shown as out on loan, and the screenshots are written to modules/loans/.evidence/"
       - "Given a loan recorded and the tool handed back, when the return is recorded, then the history shows who held the tool and between which dates, the tool is shown as available again, and the screenshots are written to modules/loans/.evidence/"
