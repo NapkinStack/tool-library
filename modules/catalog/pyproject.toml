@@ -6,20 +6,27 @@ name = "catalog"
 version = "0.1.0"
 description = "The neighbourhood's tool catalogue: what is listed, and who lends it."
 requires-python = ">=3.13"
-dependencies = []
+# What the module needs in order to answer a neighbour, and nothing else. Pinned, for the
+# reason the dependency group below gives. The double built from the contract runs on the
+# same two, so they are here rather than in a test-only group.
+dependencies = [
+    "fastapi==0.141.1",            # the web surface the charter fixes (C2)
+    "uvicorn==0.53.0",
+    "jinja2==3.1.6",               # server-rendered HTML: no build step, no bundler (C2)
+    "python-multipart==0.0.32",    # what Starlette reads a submitted form with
+]
 
 # What the e2e verb needs, and nothing else needs. Pinned: a scenario that answers
 # differently from one run to the next is evidence of nothing.
 [dependency-groups]
 e2e = [
-    "pytest==8.4.2",
-    "playwright==1.63.0",           # the charter's e2e driver (C2); no browser for D1's calls
-    "pyyaml==6.0.3",                # reads the contract document
-    "jsonschema==4.26.0",           # OpenAPI 3.1 schemas are JSON Schema 2020-12
-    "referencing==0.37.0",          # resolves the document's own $ref
+    "pytest==9.1.1",               # 9 because that is what schemathesis 4 requires
+    "playwright==1.63.0",          # the charter's e2e driver (C2); its browser arrives with D2
+    "pyyaml==6.0.3",               # reads the contract document
+    "jsonschema==4.26.0",          # OpenAPI 3.1 schemas are JSON Schema 2020-12
+    "referencing==0.37.0",         # resolves the document's own $ref
     "openapi-spec-validator==0.9.0",
-    "fastapi==0.141.1",             # the double's surface (C2)
-    "uvicorn==0.53.0",
+    "schemathesis==4.27.3",        # the producer-side contract test the charter fixes (C2)
 ]
 
 [tool.ruff]
