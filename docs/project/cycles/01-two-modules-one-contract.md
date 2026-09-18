@@ -1,6 +1,6 @@
 ---
 goal: "Run one NapkinStack cycle end to end on two modules that meet only through a versioned contract, each delivering something a neighbour could see on a phone, each verified by a session that did not write it"
-status: accepted           # proposed | accepted | closed | stopped — the decider accepts
+status: closed             # proposed | accepted | closed | stopped — the decider accepts
 appetite_weeks: 1         # the time the decider WANTS to spend, not an estimate
 start: 2026-09-19         # YYYY-MM-DD
 end: 2026-09-26           # start + appetite: the first day the cycle is over — the circuit breaker
@@ -16,7 +16,7 @@ deliverables:
   - id: D2
     title: "A neighbour publishes a tool on a phone and sees it in the neighbourhood list"
     module: "catalog"
-    state: ready
+    state: accepted
     acceptance:
       - "Given a neighbourhood with no tool listed, when a neighbour opens the list at a 375-pixel-wide viewport, then the page says that no tool is listed yet and how to publish the first one, and the screenshot is written to modules/catalog/.evidence/"
       - "Given the test persona Amina at a 375-pixel-wide viewport, when she publishes a tool with its name and an approximate location, then the tool appears in the neighbourhood list, no exact address appears on the page or in any response, and the screenshots are written to modules/catalog/.evidence/"
@@ -25,14 +25,14 @@ deliverables:
   - id: D3
     title: "A neighbour records a loan of a listed tool with its two dates, and records its return"
     module: "loans"
-    state: ready
+    state: accepted
     acceptance:
       - "Given the test persona Bruno at a 375-pixel-wide viewport and a tool listed in catalog, when he records a loan with a hand-over date and a return date, then the loan appears with both dates, the tool is shown as out on loan, and the screenshots are written to modules/loans/.evidence/"
       - "Given a loan recorded and the tool handed back, when the return is recorded, then the history shows who held the tool and between which dates, the tool is shown as available again, and the screenshots are written to modules/loans/.evidence/"
       - "Given a return date earlier than the hand-over date, when the neighbour submits the loan, then the page says what to correct, no loan is recorded, and the screenshot is written to modules/loans/.evidence/"
       - "Given catalog neither running nor installed, when the test and e2e verbs of loans run against the double built from contracts/catalog-api/v1/openapi.yaml alone, then both pass and the run is written to modules/loans/.evidence/"
-# outcome: completed      # closed: completed | shipped — stopped: reframed | stopped
-# ended_on: YYYY-MM-DD
+outcome: completed        # every deliverable accepted, before the end date
+ended_on: 2026-09-19      # seven days before the appetite's end
 ---
 
 # Cycle 01 — Two modules, one contract
@@ -171,5 +171,31 @@ Candidates for the next framing, in the order the discovery argues for them:
 
 ## Closure
 
-<Written at the end: what was delivered, which success criteria moved, what was deferred,
-where the next framing starts.>
+**Closed on 2026-09-19, `completed`, seven days before the end date.** Every deliverable was
+accepted; the circuit breaker was never reached. The appetite was one week and the work took
+one day, which is worth recording as plainly as a slip would have been.
+
+**What was delivered.** D1 — `contracts/catalog-api/v1/openapi.yaml`, hand-written, and a
+double built from that document alone. D2 — a neighbour publishes a tool on a phone and sees
+it in the list, and `catalog` answers its own contract. D3 — a neighbour records a loan with
+its two dates and its return, against the contract and a double of its own.
+
+**Nothing was deferred and nothing was dropped.**
+
+**Which success criterion moved.** The charter's only criterion is observed at this closure,
+and each of its clauses holds: a charter accepted; one cycle accepted with an appetite and an
+end date; two modules created with owners and manifests; a versioned contract provided by one
+and consumed by the other; every accepted deliverable's test sheet run by a verifier who is
+not its author, with evidence on the head commit; a closure decision recorded before the end
+date; and `nstack fitness` green on `main` throughout. None of the three misses occurred — no
+silence past the end date, no barrier bypassed, no deliverable closed without its evidence.
+
+**And what the closure must not hide.** The criterion counts barriers holding. Task 7's
+probes showed that two of them do not exist in practice for the boundary this framework
+prescribes: a module may consume a contract without declaring it (`B1` silent), and may
+import another module's implementation through a path manipulation (`B2` silent). Neither was
+bypassed here — they were never able to refuse. That does not make the criterion missed as it
+is written, and it is the first thing the exit decision has to weigh.
+
+**Where the next framing starts.** With the seven candidates in *Later*, and with a decision
+about the boundary rules before any project relies on them.
