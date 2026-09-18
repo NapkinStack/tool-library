@@ -1,0 +1,21 @@
+# The module's own tooling. The project's stack is fixed by the charter, constraint C2.
+# uv is the only prerequisite: every command below runs from this folder through it.
+
+[project]
+name = "loans"
+version = "0.1.0"
+description = "Who holds which tool, between which dates, and what came back."
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"
