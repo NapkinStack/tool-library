@@ -1,5 +1,5 @@
 ---
-status: proposed              # proposed | accepted — the decider accepts
+status: accepted               # proposed | accepted — the decider accepts
 decider: "@napkinstack-admin" # the human who validates the charter and the cycles
 success_criteria:             # when the goal is reached: measurable, dated or relative to a named event
   - "At the closure of cycle 1: a full NapkinStack cycle ran end to end — a charter accepted, one cycle accepted with an appetite and an end date, two modules created with owners and manifests, a versioned contract provided by one and consumed by the other, every accepted deliverable's test sheet run by a verifier who is not its author with its evidence attached, a closure decision recorded on or before the end date, and nstack fitness green on main throughout"

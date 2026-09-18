@@ -1,6 +1,6 @@
 ---
 goal: "Run one NapkinStack cycle end to end on two modules that meet only through a versioned contract, each delivering something a neighbour could see on a phone, each verified by a session that did not write it"
-status: proposed          # proposed | accepted | closed | stopped — the decider accepts
+status: accepted           # proposed | accepted | closed | stopped — the decider accepts
 appetite_weeks: 1         # the time the decider WANTS to spend, not an estimate
 start: 2026-09-19         # YYYY-MM-DD
 end: 2026-09-26           # start + appetite: the first day the cycle is over — the circuit breaker
