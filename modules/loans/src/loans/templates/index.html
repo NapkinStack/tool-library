@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loans — the neighbourhood's tools</title>
+<style>
+  :root { color-scheme: light dark; --ink: #12181f; --paper: #fbfbfa; --line: #c9cfd6;
+          --quiet: #4b5563; --out: #7c2d12; --in: #065f46; --error: #7c2d12; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #eef2f6; --paper: #12181f; --line: #3b444d; --quiet: #b6bfc9;
+            --out: #fca5a5; --in: #6ee7b7; --error: #fca5a5; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 34rem; margin: 0 auto; padding: 1rem 1rem 3rem; }
+  h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
+  h2 { font-size: 1.1rem; margin: 2rem 0 .5rem; }
+  h3 { font-size: 1rem; margin: 0 0 .25rem; }
+  .quiet { color: var(--quiet); font-size: .875rem; margin: 0 0 .5rem; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { border: 1px solid var(--line); border-radius: .5rem; padding: .75rem; margin-bottom: .5rem; }
+  .state { font-weight: 600; margin: .25rem 0 .5rem; }
+  .state[data-state="out-on-loan"] { color: var(--out); }
+  .state[data-state="available"] { color: var(--in); }
+  label { display: block; font-weight: 600; margin: .75rem 0 .25rem; }
+  input, select, button { font: inherit; width: 100%; min-height: 44px; padding: .5rem;
+                          border: 1px solid var(--line); border-radius: .5rem;
+                          background: var(--paper); color: var(--ink); }
+  button { background: var(--ink); color: var(--paper); border: 0; font-weight: 600;
+           margin-top: .75rem; cursor: pointer; }
+  :focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
+  #error { border: 1px solid var(--error); border-left-width: .375rem; border-radius: .5rem;
+           color: var(--error); padding: .75rem; margin: .5rem 0 0; font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Loans</h1>
+  <p class="quiet">Who holds a listed tool, and until when. Every neighbour and every tool
+    here is invented: test data only.</p>
+
+  <section aria-labelledby="listed-heading">
+    <h2 id="listed-heading">Tools in the neighbourhood</h2>
+    {% if tools %}
+    <ul id="listed">
+      {% for tool in tools %}
+      {% set loan = out.get(tool.id) %}
+      <li data-tool="{{ tool.id }}">
+        <h3>{{ tool.name }}</h3>
+        <p class="quiet">Lent by {{ tool.lender }} · {{ tool.approximate_location }}</p>
+        {% if loan %}
+        <p class="state" data-state="out-on-loan">Out on loan — {{ loan.holder }} has it
+          until {{ loan.back_on }}</p>
+        <form method="post" action="/loans/{{ loan.id }}/return">
+          <button type="submit">Record the return of {{ tool.name }}</button>
+        </form>
+        {% else %}
+        <p class="state" data-state="available">Available</p>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p id="listed">No tool is listed yet. Nothing can be borrowed until a neighbour
+      publishes one.</p>
+    {% endif %}
+  </section>
+
+  <section aria-labelledby="record-heading">
+    <h2 id="record-heading">Record a loan</h2>
+    {% if error %}<p id="error" role="alert">{{ error }}</p>{% endif %}
+    <form method="post" action="/loans">
+      <label for="tool_id">Which tool</label>
+      <select id="tool_id" name="tool_id" required>
+        <option value="">Choose a tool</option>
+        {% for tool in tools %}
+        <option value="{{ tool.id }}"{% if typed.get('tool_id') == tool.id %} selected{% endif %}>
+          {{ tool.name }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="holder">Who is taking it</label>
+      <input id="holder" name="holder" type="text" required autocomplete="off"
+             value="{{ typed.get('holder', '') }}">
+
+      <label for="handed_over">Handed over on</label>
+      <input id="handed_over" name="handed_over" type="date" required
+             value="{{ typed.get('handed_over', '') }}"
+             {% if error %}aria-describedby="error"{% endif %}>
+
+      <label for="back_on">Back on</label>
+      <input id="back_on" name="back_on" type="date" required
+             value="{{ typed.get('back_on', '') }}"
+             {% if error %}aria-describedby="error"{% endif %}>
+
+      <button type="submit">Record the loan</button>
+    </form>
+  </section>
+
+  <section aria-labelledby="history-heading">
+    <h2 id="history-heading">History</h2>
+    {% if loans %}
+    <ul id="history">
+      {% for loan in loans %}
+      <li data-loan="{{ loan.id }}">
+        <strong>{{ loan.holder }}</strong> {{ 'held' if loan.returned else 'has' }}
+        {{ loan.tool_name }} from {{ loan.handed_over }} to {{ loan.back_on }}
+        <p class="state" data-state="{{ 'returned' if loan.returned else 'out-on-loan' }}">
+          {{ 'Returned' if loan.returned else 'Out on loan' }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p id="history">No loan recorded yet. The first one you record appears here.</p>
+    {% endif %}
+  </section>
+</main>
+</body>
+</html>

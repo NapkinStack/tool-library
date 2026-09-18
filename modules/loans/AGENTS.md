@@ -21,14 +21,18 @@ Records who holds a listed tool, from the day it is handed over to the day it co
   tests only through a double built from that schema. Importing `catalog`, or reading its
   data, is refused by B2 and B5 — and it would destroy the only property cycle 1 exists to
   demonstrate.
-- **`consumes` stays empty until the contract exists.** A dependency declared and never
-  used is a violation in its own right (B4).
-- **`user_facing` is raised by the deliverable that puts a page in front of a neighbour**,
-  in that same pull request — D3 for this module. It is `false` while nothing is visible,
-  because the manifest describes what is. From the moment it is `true`, every pull request
-  touching this module carries a test sheet, and no later pull request can lower it back.
-- **`commands` name `src tests` rather than `.`** A tool pointed at a folder also walks
-  whatever a workstation leaves in it.
+- **`consumes` declares `catalog-api v1`, and the contract is read as a document.**
+  `src/loans/contract.py` is the only place that opens
+  `contracts/catalog-api/v1/openapi.yaml`; `src/loans/catalogue_double.py` builds the
+  double from it. Nothing here imports `catalog`, which is why `nstack boundaries` warns
+  `B4` ("no use detected"): its detection looks for the other module's name in an import
+  line, and a consumer that imports nothing of its producer is exactly what ADR-0001 asks
+  for. Do not silence the warning by inventing an import.
+- **`user_facing` is `true` since D3** — the deliverable that put the page in front of a
+  neighbour raised it in its own pull request. Every pull request touching this module now
+  carries a test sheet, and none can lower the flag back.
+- **`commands` name `src tests e2e` rather than `.`** A tool pointed at a folder also
+  walks whatever a workstation leaves in it.
 
 ## Business invariants
 
@@ -41,8 +45,17 @@ Records who holds a listed tool, from the day it is handed over to the day it co
 
 ## Known traps
 
-Nothing recorded yet. The first entry belongs to whoever hits it, with the test that would
-have caught it.
+- **`httpx.ASGITransport` is asynchronous only.** It is what lets this module speak real
+  HTTP to the double without opening a port, and it is why `Catalogue` and the page's
+  routes are `async`. A synchronous `httpx.Client` fails on it at construction, not at the
+  first call, so the symptom is an `AttributeError` about `__enter__`.
+- **Playwright's synchronous API keeps an event loop running in the test's thread**, so
+  `asyncio.run(...)` inside an `e2e` test raises *cannot be called from a running event
+  loop*. Run the coroutine on a thread of its own — `what_the_double_answers()` in
+  `e2e/test_record_a_loan.py`.
+- **FastAPI cannot build a response model from a union of responses.** A handler that
+  answers either a page or a redirect is annotated `-> Response`, not
+  `-> HTMLResponse | RedirectResponse`, which fails at application creation.
 
 ## Non-standard commands
 
