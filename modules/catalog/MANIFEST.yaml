@@ -49,11 +49,14 @@ dependencies: []
 # Sources are named rather than walking ".": a tool that walks the folder also walks
 # whatever a workstation leaves in it.
 commands:
-  check: "uvx --from ruff==0.16.8 ruff format --check src tests && uvx --from ruff==0.16.8 ruff check src tests"
+  check: "uvx --from ruff==0.16.8 ruff format --check src tests e2e && uvx --from ruff==0.16.8 ruff check src tests e2e"
   test: "uv run --with pytest==8.4.2 pytest"
+  # D1's scenarios: the contract validated, then called against the double built from it.
+  # Playwright, as the charter fixes (C2) - here its API request context, since D1 puts no
+  # page in front of anyone. The browser and its screenshots arrive with D2.
+  e2e: "uv run --group e2e pytest e2e"
   # bootstrap:                   # nothing to prepare: uv resolves on demand
   # run:                         # declared with D2, when there is a page to serve
-  # e2e:                         # declared with D1: Playwright, evidence in .evidence/
 
 # Review budget. Inherited from the project when absent (docs/os/05-workflow.md §4).
 review_budget:

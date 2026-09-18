@@ -8,9 +8,23 @@ description = "The neighbourhood's tool catalogue: what is listed, and who lends
 requires-python = ">=3.13"
 dependencies = []
 
+# What the e2e verb needs, and nothing else needs. Pinned: a scenario that answers
+# differently from one run to the next is evidence of nothing.
+[dependency-groups]
+e2e = [
+    "pytest==8.4.2",
+    "playwright==1.63.0",           # the charter's e2e driver (C2); no browser for D1's calls
+    "pyyaml==6.0.3",                # reads the contract document
+    "jsonschema==4.26.0",           # OpenAPI 3.1 schemas are JSON Schema 2020-12
+    "referencing==0.37.0",          # resolves the document's own $ref
+    "openapi-spec-validator==0.9.0",
+    "fastapi==0.141.1",             # the double's surface (C2)
+    "uvicorn==0.53.0",
+]
+
 [tool.ruff]
 line-length = 100
-src = ["src", "tests"]
+src = ["src", "tests", "e2e"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
