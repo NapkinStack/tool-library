@@ -41,3 +41,7 @@ id_rsa*
 id_ed25519*
 .envrc
 secrets.*
+
+# Caches of the stack the charter fixed (constraint C2): ruff and pytest.
+.ruff_cache/
+.pytest_cache/

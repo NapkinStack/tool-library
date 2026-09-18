@@ -63,8 +63,19 @@ scaffolding, one pull request each, once this cycle is accepted —
 `nstack new-module loans NapkinStack/loans standard --user-facing`. Creating a module is a
 decision and carries its ADR (`modules/README.md`, `docs/os/02-modules.md` §3): the
 capability covered, the boundary, the alternatives rejected. `catalog` is owned by
-`NapkinStack/catalog`, `loans` by `NapkinStack/loans`; both `criticality: standard` and
-`user_facing: true` (charter, C3).
+`NapkinStack/catalog`, `loans` by `NapkinStack/loans`; both `criticality: standard`
+(charter, C3).
+
+**Re-framed on 2026-09-18, by the decider, before D1 started.** The charter's C3 fixes what
+these modules are in this cycle; this paragraph fixes *when* `user_facing` is raised. A
+module is created with `user_facing: false`, and **the deliverable that puts a page in
+front of a neighbour raises it in its own pull request** — D2 for `catalog`, D3 for
+`loans`. The reason is that the manifest describes what is: at creation nothing is visible,
+and `provides` is empty for the same reason. Measured before deciding: a module created
+`user_facing: true` cannot produce a mergeable pull request, because T1 then requires a
+test sheet and constraint C1 makes that sheet impossible while the module has no `e2e` run
+to produce evidence from. Nothing is weakened — T1 reads the stricter of base and head, so
+raising the flag takes effect at once and lowering it is refused.
 
 **Order and dependencies:**
 

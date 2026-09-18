@@ -1,0 +1,67 @@
+# Machine-readable source of truth for the module.
+# Read by: humans (onboarding), agents (scoping), CI (fitness functions).
+# Any divergence between this file and the code fails CI.
+
+module:
+  name: "catalog"
+
+  # ONE sentence. If it needs an "and", the module probably does two things.
+  responsibility: >
+    Holds the tools a neighbour is willing to lend in their neighbourhood.
+
+  owner: "NapkinStack/catalog"
+  contact: "@NapkinStack/catalog"
+
+  # proposed | active | maintenance | deprecated | retired   (docs/os/02-modules.md §6)
+  lifecycle: proposed
+
+  # prototype | standard | high | critical              (docs/os/07-governance.md §6)
+  criticality: "standard"
+
+  # Does a user see this module? true requires a test sheet on its pull requests
+  # (docs/os/05-workflow.md §7). False at creation because it is true: nothing is in front
+  # of a neighbour yet. Deliverable D2 raises it in the pull request that delivers the page,
+  # which is the same pull request whose test sheet proves it. Raising it is caught at once
+  # and lowering it is impossible: T1 reads the stricter of base and head.
+  user_facing: false
+
+# Contracts PROVIDED by this module.
+# Deliberately empty at creation: the declared graph must equal the real one, and
+# contracts/catalog-api/v1 does not exist yet. Deliverable D1 of cycle 1 creates it and
+# declares it here in the same pull request.
+provides: []
+
+# Contracts CONSUMED - this is the DECLARED graph.
+# CI compares it with the REAL graph extracted from the code: any gap is a violation.
+consumes: []
+
+# Data owned. Nobody else accesses it directly.
+data:
+  owns:
+    - "The tools listed in a neighbourhood: what the tool is, who lends it, roughly where"
+  shared: []                     # any exception requires a named ADR
+
+# Significant external dependencies.
+dependencies: []
+
+# Standard verbs: the same names everywhere, running this module's stack commands
+# (docs/os/09-platform.md §2). The stack is the charter's constraint C2.
+# Sources are named rather than walking ".": a tool that walks the folder also walks
+# whatever a workstation leaves in it.
+commands:
+  check: "uvx --from ruff==0.16.8 ruff format --check src tests && uvx --from ruff==0.16.8 ruff check src tests"
+  test: "uv run --with pytest==8.4.2 pytest"
+  # bootstrap:                   # nothing to prepare: uv resolves on demand
+  # run:                         # declared with D2, when there is a page to serve
+  # e2e:                         # declared with D1: Playwright, evidence in .evidence/
+
+# Review budget. Inherited from the project when absent (docs/os/05-workflow.md §4).
+review_budget:
+  max_lines: 400
+  max_files: 15
+  max_modules: 1                 # not adjustable
+
+docs:
+  readme: README.md
+  agents: AGENTS.md
+  adr: docs/adr/
