@@ -22,3 +22,4 @@ See `docs/os/06-decisions.md`.
 
 | No. | Title | Status | Criterion to check on |
 |---|---|---|---|
+| [0001](./0001-two-modules-meeting-through-one-contract.md) | Split the domain into `catalog` and `loans`, meeting through one contract | Accepted (2026-09-18) | 2026-09-26, deliverable D3's isolation criterion |
