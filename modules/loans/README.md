@@ -60,3 +60,5 @@ ADR-0001 asks for, and it is invisible to a detector calibrated for imports.
 
 See [`docs/adr/0001-two-modules-meeting-through-one-contract.md`](../../docs/adr/0001-two-modules-meeting-through-one-contract.md)
 for why this module exists and where its boundary is.
+
+<!-- Probe P1: this pull request deliberately touches two modules. -->
