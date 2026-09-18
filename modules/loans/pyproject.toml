@@ -6,7 +6,17 @@ name = "loans"
 version = "0.1.0"
 description = "Who holds which tool, between which dates, and what came back."
 requires-python = ">=3.13"
-dependencies = []
+# Pinned, because a page verified at a 375-pixel-wide viewport is only evidence if the
+# same versions answer in CI and on a workstation. Their exit strategies are in the
+# MANIFEST; the stack itself is the charter's C2, not this module's choice.
+dependencies = [
+    "fastapi==0.141.1",
+    "httpx==0.28.1",
+    "jinja2==3.1.6",
+    "python-multipart==0.0.32",
+    "pyyaml==6.0.3",
+    "uvicorn==0.53.0",
+]
 
 [tool.ruff]
 line-length = 100

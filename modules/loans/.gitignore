@@ -1,0 +1,4 @@
+# The loans this module owns, when the page is run on a workstation: real data of a
+# made-up neighbourhood, never something to commit. The path is LOANS_DB; this is its
+# default (src/loans/records.py). The root .gitignore already covers .evidence/.
+.data/
