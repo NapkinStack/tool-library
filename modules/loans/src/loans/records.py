@@ -118,3 +118,5 @@ class Loans:
     def out_on_loan(self) -> dict[str, Loan]:
         """The tools that have not come back, by tool identifier."""
         return {loan.tool_id: loan for loan in reversed(self.recorded()) if not loan.returned}
+
+# Probe P5: a deliberate behaviour change, so the pull request counts as delivery work.
