@@ -19,8 +19,13 @@ dependencies: []
 # (fitness M7), and compat once a version is consumed or stable (nstack compat, V1). The
 # tools are the project's, named in docs/tooling-profile.md.
 commands:
-#  check:     # validates every contract document against its format
-#  test:      # the contract tests, run on both sides (docs/os/03-contracts.md §5)
+  # Every document is valid OpenAPI 3.1 - its structure, not its examples.
+  check: >-
+    uvx --from openapi-spec-validator==0.9.0 openapi-spec-validator */v*/openapi.yaml &&
+    uvx --from ruff==0.16.8 ruff format --check tests && uvx --from ruff==0.16.8 ruff check tests
+  # Every example is what its schema declares: the consumers' doubles are built from them.
+  # Both sides' contract tests are the modules' own (charter, C2).
+  test: "uvx --python 3.13 --from pytest==9.1.1 --with pyyaml==6.0.3 --with jsonschema==4.26.0 pytest tests"
 #  compat:    # exits 0 when $NSTACK_HEAD_PATH is compatible with $NSTACK_BASE_PATH
 
 docs:

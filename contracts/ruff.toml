@@ -1,0 +1,5 @@
+# The modules' own rules (modules/*/pyproject.toml): contracts holds Python for its tests only.
+line-length = 100
+
+[lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
