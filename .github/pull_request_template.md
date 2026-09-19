@@ -58,7 +58,8 @@ other: <specify>
 
 - [ ] No contract affected
 - [ ] Contract consumed — the version is declared in the manifest
-- [ ] Contract changed, **additive** — contract tests green
+- [ ] Contract changed, **additive** — contract tests green, and `nstack compat` proving it
+      once the version is consumed or stable
 - [ ] Contract changed, **breaking** — expand/contract step no. <1|2|3|4>, ADR linked,
   removal date set
 
@@ -95,7 +96,7 @@ other: <specify>
 > not the author (`playbooks/verification.md`). Kind: automated · explored · human only —
 > reason. Result: passed · failed — what was observed · not verified.
 
-Verifier: <agent session or @human>
+Verifier: <@handle, or session and the agent session's identifier>
 
 | # | Given · when · then | Kind | Result | Evidence | Commit |
 |---|---|---|---|---|---|

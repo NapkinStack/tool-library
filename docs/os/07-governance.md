@@ -124,6 +124,11 @@ The first six are cheap: they are computed from data already present (manifests,
 contract schemas). There is **no semantic analysis** — these are comparisons of graphs
 and schemas.
 
+Beside them, the engine checks what a shared repository must not carry: a path rooted in one
+person's home directory, in any tracked file (H1). It exists on no other machine and
+publishes the layout of the one it was written on; an image's or a runner's home, a
+placeholder or a variable is the same everywhere.
+
 ### Writing a fitness function
 
 A good fitness function is fast (it runs on every pull request), deterministic (no random
@@ -230,6 +235,7 @@ to use (GitHub wording, transposable elsewhere):
 | Merge queue | Avoids merges that break each other |
 | A dedicated identity for agents | An agent neither approves nor merges around a human approval |
 | Rulesets with an empty bypass list | Nobody, administrators included, merges around a rule |
+| Stale approvals dismissed on push | An approval covers the commits its approver read |
 | A default code owner | The code owner review covers every path |
 
 > **Critical rules must not be bypassable by an instruction given to the AI.** That is
@@ -239,7 +245,7 @@ to use (GitHub wording, transposable elsewhere):
 ### Agents and approval
 
 A pull request's author cannot approve it. An agent working with a human's credentials
-*is* that human: it can approve a colleague's pull request in their name, then merge. Three
+*is* that human: it can approve a colleague's pull request in their name, then merge. Four
 settings close that door, and they only hold together:
 
 1. **The agent has its own identity** — a GitHub App installed on the repository: tokens
@@ -249,6 +255,8 @@ settings close that door, and they only hold together:
 2. **The merge requires a human code owner's approval**, and `CODEOWNERS` starts with a
    default owner: an App can approve, but it is never a code owner.
 3. **Nobody is on the rulesets' bypass list**, administrators included.
+4. **An approval is dismissed when new commits are pushed**: otherwise a force-push after
+   the approval merges content its approver never read.
 
 The human who drove the agent may approve its pull request. A team that wants four eyes
 adds "require approval of the most recent reviewable push", or a second reviewer. An
