@@ -80,11 +80,6 @@ class Loans:
             raise Refused("Say who is taking the tool: the history is a name and two dates.")
         leaves = _a_date(handed_over, "hand-over")
         comes_back = _a_date(back_on, "return")
-        if comes_back < leaves:
-            raise Refused(
-                "The return date is before the hand-over date. Correct the dates: "
-                "a tool cannot come back before it leaves."
-            )
         with self._open() as connection:
             cursor = connection.execute(
                 "INSERT INTO loans (tool_id, tool_name, holder, handed_over, back_on) "
