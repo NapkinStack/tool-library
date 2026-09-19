@@ -51,11 +51,13 @@ Records who holds a listed tool, from the day it is handed over to the day it co
   `pyproject.toml`, then `uv lock`, and the verb runs `--group <name>`. A pin changed without
   `uv lock` is refused by every verb that runs `uv run`, and `uv` names the fix — not by
   `check`, which runs ruff through `uvx` and never reads the lock.
-- **`test` and `e2e` run `--exact`.** `uv run` adds to an environment and never
-  removes, so in CI, where the verbs share one, a verb would pass on a package only another
-  group brings, and fail on a workstation that runs it first.
-- **`.python-version` holds the charter's Python, 3.13 (C2).** Without it `uv` takes the
-  newest interpreter it finds or downloads: CI ran 3.14 while workstations ran 3.13.
+- **`test` and `e2e` run `--exact`.** Without it `uv run` installs what is missing
+  and never removes an extraneous package, so in CI, where the verbs share one environment, a
+  verb would pass on a package only another group brings, and fail on a workstation that runs
+  it first.
+- **`.python-version` holds the charter's Python, 3.13 (C2).** `requires-python` only sets a
+  floor: without the pin, a runner whose own Python is below it gets the newest one `uv` can
+  download — CI ran 3.14.7 while workstations ran 3.13.
 - **`httpx.ASGITransport` is asynchronous only.** It is what lets this module speak real
   HTTP to the double without opening a port, and it is why `Catalogue` and the page's
   routes are `async`. A synchronous `httpx.Client` fails on it at construction, not at the

@@ -73,11 +73,15 @@ Holds the tools a neighbour is willing to lend in their neighbourhood.
   `pyproject.toml`, then `uv lock`, and the verb runs `--group <name>`. A pin changed without
   `uv lock` is refused by every verb that runs `uv run`, and `uv` names the fix — not by
   `check`, which runs ruff through `uvx` and never reads the lock.
-- **`test`, `e2e` and `bootstrap` run `--exact`.** `uv run` adds to an environment and never
-  removes, so in CI, where the verbs share one, a verb would pass on a package only another
-  group brings, and fail on a workstation that runs it first.
-- **`.python-version` holds the charter's Python, 3.13 (C2).** Without it `uv` takes the
-  newest interpreter it finds or downloads: CI ran 3.14 while workstations ran 3.13.
+
+- **`test`, `e2e` and `bootstrap` run `--exact`.** Without it `uv run` installs what is missing
+  and never removes an extraneous package, so in CI, where the verbs share one environment, a
+  verb would pass on a package only another group brings, and fail on a workstation that runs
+  it first.
+
+- **`.python-version` holds the charter's Python, 3.13 (C2).** `requires-python` only sets a
+  floor: without the pin, a runner whose own Python is below it gets the newest one `uv` can
+  download — CI ran 3.14.7 while workstations ran 3.13.
 
 - **`src/` is not on `sys.path` under `uv run`.** This `pyproject.toml` declares no
   `[build-system]`, so uv treats the project as non-packaged and never installs it:
