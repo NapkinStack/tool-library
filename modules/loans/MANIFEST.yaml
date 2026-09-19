@@ -51,10 +51,7 @@ provides: []
 # catalog and starts nothing of it. B4's detection looks for the other module's name in an
 # import line, so it reports this dependency as unused; it is used, by the only route a
 # contract is allowed to be used by (see README, "Contracts").
-consumes:
-  - contract: catalog-api
-    version: v1
-    module: catalog
+consumes: []   # Probe P3: the declaration is deliberately removed
 
 # Data owned. Nobody else accesses it directly.
 data:
