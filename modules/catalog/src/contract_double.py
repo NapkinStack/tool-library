@@ -27,7 +27,7 @@ needs it built first.
 
 Start it from the module folder, exactly as `README.md` says — and as the scenarios do:
 
-    uv run --group e2e python src/contract_double.py <openapi document> [port]
+    uv run --locked --group e2e python src/contract_double.py <openapi document> [port]
 """
 
 from __future__ import annotations

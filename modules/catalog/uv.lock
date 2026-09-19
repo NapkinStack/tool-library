@@ -63,6 +63,9 @@ e2e = [
     { name = "referencing" },
     { name = "schemathesis" },
 ]
+test = [
+    { name = "pytest" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -82,6 +85,7 @@ e2e = [
     { name = "referencing", specifier = "==0.37.0" },
     { name = "schemathesis", specifier = "==4.27.3" },
 ]
+test = [{ name = "pytest", specifier = "==9.1.1" }]
 
 [[package]]
 name = "certifi"

@@ -18,6 +18,19 @@ dependencies = [
     "uvicorn==0.53.0",
 ]
 
+# What the test and e2e verbs need, and the page does not. Pinned, and resolved in uv.lock
+# with everything else: `uv run --with` would resolve outside the lock, where what the pins
+# pull in floats.
+[dependency-groups]
+test = [
+    "pytest==8.4.2",
+    "jsonschema==4.26.0",           # the consumer side: responses checked against the contract's schemas
+]
+e2e = [
+    "pytest==8.4.2",
+    "playwright==1.63.0",           # the charter's e2e driver (C2)
+]
+
 [tool.ruff]
 line-length = 100
 src = ["src", "tests"]

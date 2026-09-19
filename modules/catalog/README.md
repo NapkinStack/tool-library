@@ -31,7 +31,7 @@ address**, which is a no-go of the charter and an invariant of this module.
 
 ```bash
 cd modules/catalog
-PYTHONPATH=src uv run python -m catalog.app [database] [port]
+PYTHONPATH=src uv run --locked python -m catalog.app [database] [port]
 ```
 
 This is the command the `run` verb and the scenarios both use, so it is checked on every run
@@ -56,7 +56,7 @@ publishing is something a neighbour does, not something another module does.
 
 ```bash
 cd modules/catalog
-uv run --group e2e python src/contract_double.py ../../contracts/catalog-api/v1/openapi.yaml 8000
+uv run --locked --group e2e python src/contract_double.py ../../contracts/catalog-api/v1/openapi.yaml 8000
 ```
 
 This is the command the `e2e` scenarios use to start it, so it is checked on every run

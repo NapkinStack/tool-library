@@ -11,7 +11,7 @@ Two surfaces, and they are not the same thing:
 
 Start it from the module folder, exactly as `README.md` says — and as the scenarios do:
 
-    PYTHONPATH=src uv run python -m catalog.app [database] [port]
+    PYTHONPATH=src uv run --locked python -m catalog.app [database] [port]
 """
 
 from __future__ import annotations

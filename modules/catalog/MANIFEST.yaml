@@ -57,7 +57,7 @@ dependencies: []
 # whatever a workstation leaves in it.
 commands:
   check: "uvx --from ruff==0.16.8 ruff format --check src tests e2e && uvx --from ruff==0.16.8 ruff check src tests e2e"
-  test: "uv run --locked --with pytest==9.1.1 pytest"
+  test: "uv run --locked --group test pytest"
   # D1's scenarios read the contract and call the double built from it; D2's drive this
   # module - the page in a browser at a phone's width, and the contract answered by the
   # module itself. Playwright is the charter's e2e driver (C2); the browser arrives with D2,
