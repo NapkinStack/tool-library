@@ -177,7 +177,7 @@ def listed_neighbourhood(document: dict[str, Any], tmp_path_factory) -> Iterator
     for tool in listed_example(document)["tools"]:
         add(
             connection,
-            Listing(tool["id"], tool["name"], tool["lender"], tool["approximateLocation"]),
+            Listing(tool["id"], tool["name"], tool["lender"], tool["whereabouts"]),
         )
     connection.close()
     with serving(database) as base:

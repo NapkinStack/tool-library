@@ -44,7 +44,7 @@ class Listing:
             "id": self.id,
             "name": self.name,
             "lender": self.lender,
-            "approximateLocation": self.approximate_location,
+            "whereabouts": self.approximate_location,
         }
 
 

@@ -37,6 +37,6 @@ def test_a_whole_form_is_published_with_its_own_identifier_and_nothing_trimmed_a
         "id": listing.id,
         "name": "Hammer drill",
         "lender": "Amina",
-        "approximateLocation": "Rue des Lilas",
+        "whereabouts": "Rue des Lilas",
     }
     assert published(WHOLE).id != listing.id, "two listings must not share an identifier"

@@ -48,11 +48,11 @@ paths:
                   - id: "9f1c6f6a-5f1e-4e2a-9a1e-6a1b0c2d3e4f"
                     name: Hammer drill
                     lender: Amina
-                    approximateLocation: Rue des Lilas, near the bakery
+                    whereabouts: Rue des Lilas, near the bakery
                   - id: "3b7d2c18-8c4a-4f6b-b2d1-0e9a7c5f4d3b"
                     name: Extension ladder
                     lender: Bruno
-                    approximateLocation: Allee du Parc, by the playground
+                    whereabouts: Allee du Parc, by the playground
 
   /tools/{toolId}:
     get:
@@ -74,7 +74,7 @@ paths:
                 id: "9f1c6f6a-5f1e-4e2a-9a1e-6a1b0c2d3e4f"
                 name: Hammer drill
                 lender: Amina
-                approximateLocation: Rue des Lilas, near the bakery
+                whereabouts: Rue des Lilas, near the bakery
         "400":
           description: The request is not one this document declares.
           content:
@@ -122,7 +122,7 @@ components:
     Tool:
       type: object
       additionalProperties: false
-      required: [id, name, lender, approximateLocation]
+      required: [id, name, lender, whereabouts]   # Probe P4c: v1 broken on purpose
       properties:
         id:
           $ref: "#/components/schemas/ToolId"
@@ -138,7 +138,7 @@ components:
           description: >-
             The neighbour who lends it - a name typed on a form, never a verified
             identity and never a way to reach them.
-        approximateLocation:
+        whereabouts:
           type: string
           minLength: 1
           maxLength: 120
