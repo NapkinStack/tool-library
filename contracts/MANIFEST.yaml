@@ -21,11 +21,13 @@ dependencies: []
 commands:
   # Every document is valid OpenAPI 3.1 - its structure, not its examples.
   check: >-
-    uvx --from openapi-spec-validator==0.9.0 openapi-spec-validator */v*/openapi.yaml &&
+    uvx --python 3.13 --from openapi-spec-validator==0.9.0 openapi-spec-validator */v*/openapi.yaml &&
     uvx --from ruff==0.16.8 ruff format --check tests && uvx --from ruff==0.16.8 ruff check tests
   # Every example is what its schema declares: the consumers' doubles are built from them.
   # Both sides' contract tests are the modules' own (charter, C2).
-  test: "uvx --python 3.13 --from pytest==9.1.1 --with pyyaml==6.0.3 --with jsonschema==4.26.0 pytest tests"
+  test: >-
+    uvx --python 3.13 --from pytest==9.1.1 --with pyyaml==6.0.3 --with jsonschema==4.26.0
+    --with referencing==0.37.0 pytest tests
 #  compat:    # exits 0 when $NSTACK_HEAD_PATH is compatible with $NSTACK_BASE_PATH
 
 docs:

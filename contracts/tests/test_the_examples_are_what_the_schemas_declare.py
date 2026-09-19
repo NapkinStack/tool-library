@@ -9,6 +9,7 @@ nothing else would catch it.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -22,6 +23,7 @@ from referencing.jsonschema import DRAFT202012
 CONTRACTS = Path(__file__).resolve().parents[1]
 DOCUMENTS = sorted(CONTRACTS.glob("*/v*/openapi.yaml"))
 BY_REFERENCE = object()
+PROBLEM = re.compile(r"/responses/(?P<code>[1-5][0-9][0-9])/content/application~1problem\+json/")
 
 
 def escaped(key: object) -> str:
@@ -49,10 +51,18 @@ def read(document: Path) -> Any:
     return yaml.safe_load(document.read_text(encoding="utf-8"))
 
 
-CASES = [
-    pytest.param(document, schema, example, id=f"{document.relative_to(CONTRACTS)}#{where}")
+FOUND = [
+    (f"{document.relative_to(CONTRACTS)}#{where}", document, where, schema, example)
     for document in DOCUMENTS
     for where, schema, example in examples(read(document))
+]
+CASES = [
+    pytest.param(document, schema, example, id=name) for name, document, _, schema, example in FOUND
+]
+PROBLEMS = [
+    pytest.param(int(found["code"]), example, id=name)
+    for name, _, where, _, example in FOUND
+    if (found := PROBLEM.search(where)) and isinstance(example, dict)
 ]
 
 
@@ -77,3 +87,10 @@ def test_the_example_is_what_its_schema_declares(document: Path, schema: str, ex
     broken = [f"{error.json_path}: {error.message}" for error in validator.iter_errors(example)]
 
     assert not broken, broken
+
+
+@pytest.mark.parametrize(("code", "example"), PROBLEMS)
+def test_a_problem_says_the_status_its_response_answers(code: int, example: dict) -> None:
+    """RFC 9457 §3.1.3: `status` is the code of the response that carries it. A double answers
+    with the response's code and the example's body: a 404 whose body says 400 would lie."""
+    assert example.get("status", code) == code
