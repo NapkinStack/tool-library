@@ -54,7 +54,7 @@ missing setting.
 
 ```bash
 # 1. Tooling at the project's NapkinStack version (prerequisite: uv)
-uv tool install "napkinstack==0.3.1" --with-executables-from pre-commit
+uv tool install "napkinstack==0.4.0" --with-executables-from pre-commit
 
 # 2. Hooks, once per clone
 pre-commit install
@@ -81,6 +81,10 @@ The merge keeps the project's adaptations and never touches the modules' code. A
 stays marked in the file, uncommitted: the team decides, and both the hook and CI reject
 any remaining marker.
 
+A fix to NapkinStack itself can be tried here before it is released: `nstack update --ref
+<commit>` pins the unpublished commit, CI installs it from the framework's repository, and
+every run says so until a published version replaces it.
+
 ## To do once on GitHub — otherwise nothing is guaranteed
 
 Workflows **inform**; it is the rulesets that **block**. Without this step the whole
@@ -91,8 +95,12 @@ Settings → Rules → Rulesets → on the main branch (private repository: Team
 - [ ] Pull request required: no direct push to main
 - [ ] At least 1 approving review
 - [ ] Code owner review required
-- [ ] Required checks: `Fitness functions`, `PR scope and review budget`, `Hooks and secrets`, `Test sheet and cycle`
+- [ ] Stale approvals dismissed when new commits are pushed
+- [ ] Required checks: `Fitness functions`, `PR scope and review budget`, `Hooks and secrets`, `Test sheet and cycle`, `Module checks`
 - [ ] Bypass list empty: nobody merges around the rules, administrators included
+
+GitHub offers a check to require only once it has run: open a first pull request, then
+select them.
 
 Settings → Advanced Security (private repository: the Secret Protection option):
 
@@ -158,7 +166,7 @@ token, the GitHub part stays "not verified", never compliant.
 
 ```bash
 nstack --help        # lists the commands
-nstack fitness       # manifests + boundaries + skills + plan — before every commit
+nstack fitness       # manifests + boundaries + skills + plan + hygiene — before every commit
 nstack discover <idea-file>   # starts a discovery, for your agent
 nstack plan          # the discovery, the charter and the cycles (docs/project/)
 nstack skills        # generates the Claude Code skills from the playbooks
@@ -167,6 +175,8 @@ nstack check [module]   # MANIFEST commands: check, test, bootstrap; default: al
 nstack run <module>     # local start, when commands.run is declared
 nstack e2e [module]     # end-to-end scenarios, when commands.e2e is declared
 nstack pr-check --body-file <file>   # test sheet and cycle, as CI reads them from the pull request
+nstack modules --changed-since <base>   # the modules with a file changed, as CI lists them
+nstack compat [module] --base <base>    # a contract version consumed or stable: the merged proof
 # check, test and run of a module: the `commands` section of its MANIFEST.yaml
 ```
 
@@ -217,14 +227,16 @@ fast feedback, not a guarantee: the blocking checks stay in CI
 No stack: no language, no application framework, no database. The OS imposes a **selection
 method** and a decision trail, not a list of technologies (`docs/os/06-decisions.md` §7).
 
-A new module therefore declares commands "to be declared", which fail: wiring `check`,
-`test` and `run` onto your own tooling is your job. The **names** never change, the
+A new module therefore declares no command: it is green while it holds only its
+description, and `nstack fitness` asks for `check` and `test` with its first file of code.
+Wiring them, and `run`, onto your own tooling is your job. The **names** never change, the
 **content** is yours.
 
 ## What is left to wire after the installation
 
 - [ ] The `check` and `test` commands of every module, in its `MANIFEST.yaml`
-- [ ] The contract format chosen, and the contract tests that go with it
+- [ ] The contract format chosen, and the contract tests and the comparator behind
+      `commands.compat` that go with it
 - [ ] The review budget values (400 lines / 15 files are a starting point)
 - [ ] Re-read the `description` fields in `.nstack/skills.yaml` — they are what triggers
       the skills, and they must speak your domain's vocabulary

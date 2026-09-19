@@ -15,9 +15,20 @@ data:
   shared: []
 dependencies: []
 
+# Declared with the first contract: check and test are required once this folder holds one
+# (fitness M7), and compat once a version is consumed or stable (nstack compat, V1). The
+# tools are the project's, named in docs/tooling-profile.md.
 commands:
-  check: "echo 'commands.check to be declared: contract schema validation' >&2; exit 1"
-  test: "echo 'commands.test to be declared: contract tests' >&2; exit 1"
+  # Every document is valid OpenAPI 3.1 - its structure, not its examples.
+  check: >-
+    uvx --python 3.13 --from openapi-spec-validator==0.9.0 openapi-spec-validator */v*/openapi.yaml &&
+    uvx --from ruff==0.16.8 ruff format --check tests && uvx --from ruff==0.16.8 ruff check tests
+  # Every example is what its schema declares: the consumers' doubles are built from them.
+  # Both sides' contract tests are the modules' own (charter, C2).
+  test: >-
+    uvx --python 3.13 --from pytest==9.1.1 --with pyyaml==6.0.3 --with jsonschema==4.26.0
+    --with referencing==0.37.0 pytest tests
+#  compat:    # exits 0 when $NSTACK_HEAD_PATH is compatible with $NSTACK_BASE_PATH
 
 docs:
   readme: README.md

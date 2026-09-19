@@ -142,10 +142,13 @@ modules/<name>/
 ├── docs/
 │   ├── adr/             ← local technical decisions
 │   └── runbook.md       ← when the module is operated in production
-├── contracts/           ← contracts PROVIDED by this module
 ├── src/
 └── tests/
 ```
+
+The contracts a module provides live in the project's `contracts/` module, one folder per
+contract and version (`03-contracts.md` §2), and its manifest points at them
+(`provides[].path`).
 
 **Rule for the local `AGENTS.md`**: it contains only what is specific to the module.
 Never duplicate a kernel rule there. A local `AGENTS.md` that repeats the kernel is a
@@ -192,9 +195,10 @@ flowchart LR
 
 **Legend** — dark grey: the declaration · green: the deterministic verdict.
 
-The essential point: **the manifest declares the intent, CI verifies reality.** An import
-towards an undeclared module fails in CI. A dependency declared but unused is reported.
-No semantic analysis is needed — it is a comparison of graphs.
+The essential point: **the manifest declares the intent, CI verifies reality.** A contract
+a module reads without declaring it fails in CI, and so does any reference to another
+module's code, declared or not; a contract declared and never read is reported. No semantic
+analysis is needed — it is a comparison of graphs.
 
 ---
 
@@ -259,6 +263,10 @@ violation becomes an architecture signal.
 **Rule.** A pull request changes the files of a single module. Exceptions exist but are
 visible, traced and counted.
 
+A module is touched when its behaviour changes: editing only its description — manifest,
+`AGENTS.md`, `README.md`, `docs/` — touches none, and `contracts/` is a module like the
+others.
+
 | Exception | Handling |
 |---|---|
 | Contract change | An expand/contract sequence, never a single PR (`03-contracts.md`) |
@@ -314,7 +322,8 @@ forbidden paths.
 
 **Allowed but worth watching:** shared technical primitives (logging, errors, utilities
 with no business logic). As soon as a business rule enters a shared package, two modules
-become inseparable.
+become inseparable. They live outside the module folders: a module never imports another
+module's code, and declaring its contract in `consumes` does not change that.
 
 ---
 

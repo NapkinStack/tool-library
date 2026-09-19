@@ -26,14 +26,13 @@ jobs:
       - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
 
       - name: NapkinStack, the project version
-        run: |
-          VERSION=$(yq '._commit' .copier-answers.yml)
-          uv tool install "napkinstack==${VERSION#v}" --with-executables-from pre-commit
+        run: bash .nstack/install-engine.sh
 
       - name: Test sheet and cycle
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
           PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           BASE_REF: ${{ github.base_ref }}
         run: nstack pr-check --root . --base "origin/$BASE_REF"
