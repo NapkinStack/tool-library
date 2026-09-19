@@ -57,18 +57,18 @@ dependencies: []
 # whatever a workstation leaves in it.
 commands:
   check: "uvx --from ruff==0.16.8 ruff format --check src tests e2e && uvx --from ruff==0.16.8 ruff check src tests e2e"
-  test: "uv run --with pytest==9.1.1 pytest"
+  test: "uv run --locked --exact --group test pytest"
   # D1's scenarios read the contract and call the double built from it; D2's drive this
   # module - the page in a browser at a phone's width, and the contract answered by the
   # module itself. Playwright is the charter's e2e driver (C2); the browser arrives with D2,
   # and bootstrap downloads it.
-  e2e: "uv run --group e2e pytest e2e"
+  e2e: "uv run --locked --exact --group e2e pytest e2e"
   # Playwright's browser, installed as a package and never as an action (charter, C2). CI
   # runs this before check, test and e2e; a workstation runs it once per clone.
-  bootstrap: "uv run --group e2e playwright install chromium"
+  bootstrap: "uv run --locked --exact --group e2e playwright install chromium"
   # The page, on its own SQLite file. PYTHONPATH because this project declares no
   # [build-system], so uv never puts src/ on sys.path - see AGENTS.md, known traps.
-  run: "PYTHONPATH=src uv run python -m catalog.app"
+  run: "PYTHONPATH=src uv run --locked python -m catalog.app"
 
 # Review budget. Inherited from the project when absent (docs/os/05-workflow.md §4).
 review_budget:

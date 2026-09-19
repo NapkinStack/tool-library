@@ -16,9 +16,14 @@ dependencies = [
     "python-multipart==0.0.32",    # what Starlette reads a submitted form with
 ]
 
-# What the e2e verb needs, and nothing else needs. Pinned: a scenario that answers
-# differently from one run to the next is evidence of nothing.
+# What the test and e2e verbs need, and the page does not. Pinned, and resolved in uv.lock
+# with everything else: `uv run --with` would resolve outside the lock, where what the pins
+# pull in floats. A scenario that answers differently from one run to the next is evidence
+# of nothing.
 [dependency-groups]
+test = [
+    "pytest==9.1.1",
+]
 e2e = [
     "pytest==9.1.1",                # 9 is what schemathesis 4 requires
     "playwright==1.63.0",           # the charter's e2e driver (C2); its browser arrives with D2
