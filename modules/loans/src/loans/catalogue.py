@@ -69,3 +69,8 @@ def client() -> httpx.AsyncClient:
     return httpx.AsyncClient(
         transport=httpx.ASGITransport(app=catalogue_double.build()), base_url=DOUBLE
     )
+
+# Probe P2: deliberately importing another module implementation.
+import sys
+sys.path.insert(0, "../catalog/src")
+from catalog.listing import Tool  # noqa: E402,F401  crosses the boundary on purpose
