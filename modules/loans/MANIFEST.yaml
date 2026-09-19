@@ -101,14 +101,14 @@ dependencies:
 # a tool that walks the folder also walks whatever a workstation leaves in it.
 commands:
   check: "uvx --from ruff==0.16.8 ruff format --check src tests e2e && uvx --from ruff==0.16.8 ruff check src tests e2e"
-  test: "uv run --locked --group test pytest"    # NEVER starts another module
+  test: "uv run --locked --exact --group test pytest"    # NEVER starts another module
   # D3's scenarios, in a browser at a 375-pixel-wide viewport. It starts the page itself
   # and answers the catalogue with the double built from the contract: no other module is
   # started, none is installed. The browser is installed as a package, never as an action
   # (charter, C2.3), and its download is never a reason to skip e2e.
   e2e: >-
-    uv run --locked --group e2e playwright install chromium &&
-    uv run --locked --group e2e pytest e2e
+    uv run --locked --exact --group e2e playwright install chromium &&
+    uv run --locked --exact --group e2e pytest e2e
   # bootstrap:                   # optional: make the module usable from a fresh clone
   # run:                         # optional: local start, with doubles for the dependencies
 

@@ -49,7 +49,11 @@ Records who holds a listed tool, from the day it is handed over to the day it co
   resolved in a layer of its own, outside `uv.lock`, and what it pulls in floats from one run
   to the next with no refusal. A package a verb needs goes in a dependency group of
   `pyproject.toml`, then `uv lock`, and the verb runs `--group <name>`. A pin changed without
-  `uv lock` is refused by every verb, and `uv` names the fix.
+  `uv lock` is refused by every verb that runs `uv run`, and `uv` names the fix — not by
+  `check`, which runs ruff through `uvx` and never reads the lock.
+- **`test` and `e2e` run `--exact`.** `uv run` adds to an environment and never
+  removes, so in CI, where the verbs share one, a verb would pass on a package only another
+  group brings, and fail on a workstation that runs it first.
 - **`.python-version` holds the charter's Python, 3.13 (C2).** Without it `uv` takes the
   newest interpreter it finds or downloads: CI ran 3.14 while workstations ran 3.13.
 - **`httpx.ASGITransport` is asynchronous only.** It is what lets this module speak real
