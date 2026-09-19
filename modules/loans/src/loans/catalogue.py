@@ -2,7 +2,7 @@
 
 The consumer side of the contract. It reads the four fields the contract declares and
 nothing beside them, so that `catalog` can rework its inside without breaking this module
-(`docs/os/03-contracts.md` §5).
+(`docs/os/03-contracts.md` §5). Probe P12: this sentence is the change.
 """
 
 from __future__ import annotations
