@@ -177,3 +177,7 @@ components:
         detail:
           type: string
           description: What this particular occurrence was.
+        instance:                       # Probe P4b: an optional property, added to v1
+          type: string
+          format: uri-reference
+          description: Which occurrence this was (RFC 9457 section 3.1.5).
