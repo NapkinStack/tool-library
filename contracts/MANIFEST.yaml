@@ -28,7 +28,26 @@ commands:
   test: >-
     uvx --python 3.13 --from pytest==9.1.1 --with pyyaml==6.0.3 --with jsonschema==4.26.0
     --with referencing==0.37.0 pytest tests
-#  compat:    # exits 0 when $NSTACK_HEAD_PATH is compatible with $NSTACK_BASE_PATH
+  # A frozen version changed is proven compatible by oasdiff 1.32.1 (V1). V1 reads this command
+  # as merged and runs it in the pull request's tree, so it depends on no file of that tree but
+  # the two documents: a change cannot rewrite its own proof. Each archive is pinned by the
+  # SHA-256 of the release's checksums.txt.
+  compat: |
+    set -eu
+    case "$(uname -sm)" in
+      "Linux x86_64") asset=linux_amd64 sum=7c8939fc49b75ee11fec66a5b83b37a2fca6aee109fed85013b1ba2ac2a1ee7f ;;
+      "Linux aarch64") asset=linux_arm64 sum=32fff58a120f75a723d6c2422444691c37fa6813fed61d23f53dbcb604b30f6d ;;
+      Darwin*) asset=darwin_all sum=e4d74b7e2dfb9d4819e7fc720c905ec86547e4637ac270a2b0187c0f1fb7187e ;;
+      *) echo "compat: no pinned oasdiff for $(uname -sm)" >&2; exit 2 ;;
+    esac
+    tools="$(mktemp -d)"
+    trap 'rm -rf "$tools"' EXIT
+    curl -fsSL -o "$tools/oasdiff.tar.gz" \
+      "https://github.com/oasdiff/oasdiff/releases/download/v1.32.1/oasdiff_1.32.1_$asset.tar.gz"
+    if command -v sha256sum >/dev/null; then hash=sha256sum; else hash="shasum -a 256"; fi
+    echo "$sum  $tools/oasdiff.tar.gz" | $hash -c - >/dev/null
+    tar -xzf "$tools/oasdiff.tar.gz" -C "$tools" oasdiff
+    "$tools/oasdiff" breaking --fail-on ERR "$NSTACK_BASE_PATH/openapi.yaml" "$NSTACK_HEAD_PATH/openapi.yaml"
 
 docs:
   readme: README.md
