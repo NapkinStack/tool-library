@@ -63,7 +63,7 @@ mention such a commit, and where a ruleset does refuse, it catches a bypass.
 
 ```bash
 # 1. Tooling at the project's NapkinStack version (prerequisite: uv)
-uv tool install "napkinstack==0.5.0" --with-executables-from pre-commit
+uv tool install "napkinstack==0.6.0" --with-executables-from pre-commit
 
 # 2. Hooks, once per clone
 pre-commit install
@@ -185,6 +185,7 @@ nstack run <module>     # local start, when commands.run is declared
 nstack e2e [module]     # end-to-end scenarios, when commands.e2e is declared
 nstack pr-check --body-file <file>   # test sheet and cycle, as CI reads them from the pull request
 nstack modules --changed-since <base>   # the modules with a file changed, as CI lists them
+nstack modules --changed-since <base> --with-contract-sides   # ... and both sides of a changed contract
 nstack compat [module] --base <base>    # a contract version consumed or stable: the merged proof
 # check, test and run of a module: the `commands` section of its MANIFEST.yaml
 ```
