@@ -164,7 +164,8 @@ traps, business invariants, non-standard commands, areas not to change and why.
 This is the piece that makes multi-team work operational. A single declarative file,
 readable by a human, by an agent **and by CI**.
 
-See `templates/MANIFEST.example.yaml` for the full format. It declares:
+The manifest `nstack new-module` writes is the reference for the full format;
+`contracts/MANIFEST.yaml` is the one every project already holds. It declares:
 
 - identity and responsibility in one sentence;
 - owner (a team, not an individual);
@@ -173,6 +174,10 @@ See `templates/MANIFEST.example.yaml` for the full format. It declares:
 - contracts provided;
 - contracts consumed, with versions;
 - standard commands.
+
+Each of these is filled in: a responsibility still holding the template's sentence fails
+M2 from the module's first file of code — never before, so a module the engine has just
+created is green.
 
 ### The three uses that justify its cost
 
@@ -245,10 +250,10 @@ The status lives in the manifest, so it is checkable:
 
 | Situation | CI result |
 |---|---|
-| A `maintenance` module whose contract changes | **Red** |
-| A `deprecated` module that gains a consumer | **Red** |
-| A `deprecated` module whose removal date has passed | **Red** |
-| An `active` module with no declared owner | **Red** |
+| A frozen contract version of a `maintenance` module changed | **Red** (V1): a version consumed or stable changes only with the merged proof |
+| A `deprecated` module with a consumer | Reported (B8), and **red** once its removal date has passed (M5) |
+| A `deprecated` module whose removal date has passed | **Red** (M5) |
+| An `active` module with no declared owner | **Red** (M2) |
 
 This is what avoids **permanent intermediate states**: a deprecated path that never
 disappears because nobody is responsible for removing it.
