@@ -47,14 +47,23 @@ CI decides as soon as the rulesets require it: what does not pass does not merge
 | Private vulnerability reporting | Yes | Does not exist | Does not exist |
 | CI minutes | Unlimited | 2 000 per month | Per the plan |
 
-`nstack doctor` follows the repository's visibility and names the plan required for every
-missing setting.
+`nstack doctor` reads these settings and answers in one word. **Guarded**: the forge refuses
+what the checklist asks it to refuse. **Unguarded**: nothing here refuses a merge — and it
+keeps apart what your plan forbids, which you can do nothing about, from what is simply not
+in place yet. A project that has done everything its plan allows is reported as compliant,
+and still told that it is unguarded: the checks below keep telling the truth, and none of
+them stops a merge on their own.
+
+Whatever the plan allows, the project receives one more workflow, **Commits on main**: it
+fails when a commit reached `main` outside a pull request, and names it. It records; it does
+not refuse — on a repository where nothing can refuse, it is the only thing that will ever
+mention such a commit, and where a ruleset does refuse, it catches a bypass.
 
 ## Installation
 
 ```bash
 # 1. Tooling at the project's NapkinStack version (prerequisite: uv)
-uv tool install "napkinstack==0.4.0" --with-executables-from pre-commit
+uv tool install "napkinstack==0.5.0" --with-executables-from pre-commit
 
 # 2. Hooks, once per clone
 pre-commit install
